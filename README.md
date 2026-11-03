@@ -35,3 +35,10 @@ The trade-off: this is head sampling only. It cannot dynamically adjust to traff
   - `.decide(trace_id: str) -> SamplingDecision` — returns a decision with `kept` and `ratio`.
   - `.should_keep(trace_id: str) -> bool` — convenience wrapper returning `decision.kept`.
 - `SamplingDecision` — frozen dataclass with `kept: bool` and `ratio: float`.
+
+## Design notes
+
+The window stores values eagerly rather than keeping running aggregates. Running
+sums drift with floating point over long streams, and recomputing from a small
+buffer is cheap enough that the drift is not worth the speed.
+
